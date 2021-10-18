@@ -23,7 +23,12 @@ class Project2 < Parser
 
       case command
       when "r"
-        puts(get_file_data "pc_input.txt")
+        data = get_file_data "pc_input.txt"
+        data.each do |line| 
+          parsed_line = parse line
+          parsed_line.print
+          puts ""
+        end
       when "s"
         puts "Run one line at a time."
       when "x"
@@ -31,6 +36,8 @@ class Project2 < Parser
       else
         puts "Unknown command"
       end
+
+      puts ""
     end
   end
 end
