@@ -1,18 +1,14 @@
-class Project2
+require_relative "./parser"
+require_relative "./expression"
+
+class Project2 < Parser
   def initialize
+    super(%w[w x y z], %w[= ?], %w[+ - * / **])
   end
 
-  # pc_input.txt format style:
-  # The syntax of each arithmetic expression conforms to the following four patterns
-  # where id can be one of: w, x, y, and z.
-  # And op can be one of: +, -, *, **, and /.
-  # 1. id = id op id.
-  # 2. id = id op constant.
-  # 3. id = constant.
-  # 4. id ? go int.
-  #
-  # @param filename String
-  # @return Array
+  # Returns each line in filename as an element in an array
+  # @param filename (String)
+  # @return (Array)
   def get_file_data(filename)
     file = File.open filename
     data = file.readlines.map { |line| line.chomp }
