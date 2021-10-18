@@ -29,7 +29,7 @@ class Project2
       when "r"
         puts(get_file_data "pc_input.txt")
       when "s"
- s       puts "Run one line at a time."
+        puts "Run one line at a time."
       when "x"
         break
       else
