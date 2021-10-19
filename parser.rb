@@ -17,10 +17,13 @@ class Parser
   # @param input (String)
   # @return (Expression)
   def parse(input)
-    # First split by space
+    # Remove period at the end if exists
+	  input = strip_period(input)
+
+	  # First split by space
     parsedInput = input.split " "
 
-    line_number = parsedInput[0] # T
+    line_number = strip_period parsedInput[0]
     lhs = parsedInput[1]
     assigner = parsedInput[2] # Could be a "=" or "?"
 
@@ -33,9 +36,20 @@ class Parser
       arg2 = parsedInput[4]
     end
 
-    expression = Expression.new lhs, assigner, arg1
+    expression = Expression.new input, lhs, assigner, arg1
     expression.arg2 = arg2
     expression.arg3 = arg3
     expression
+  end
+
+
+  private
+
+  def strip_period(input)
+    len = input.length
+    if input[len-1] == "."
+      return input[0..(len-2)]
+    end
+    input
   end
 end
