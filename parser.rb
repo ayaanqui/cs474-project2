@@ -24,19 +24,21 @@ class Parser
     parsedInput = input.split " "
 
     line_number = strip_period parsedInput[0]
-    lhs = parsedInput[1]
-    assigner = parsedInput[2] # Could be a "=" or "?"
+    expression = parsedInput[1..]
+
+    lhs = expression[0]
+    assigner = expression[1] # Could be a "=" or "?"
 
     arg1, arg2, arg3 = nil
-    arg1 = parsedInput[3]
+    arg1 = expression[2]
     if parsedInput.length == MAX_LEN
-      arg2 = parsedInput[4]
-      arg3 = parsedInput[5]
+      arg2 = expression[3]
+      arg3 = expression[4]
     elsif parsedInput.length == MAX_LEN-1
-      arg2 = parsedInput[4]
+      arg2 = expression[3]
     end
 
-    expression = Expression.new input, lhs, assigner, arg1
+    expression = Expression.new expression.join(" "), line_number, lhs, assigner, arg1
     expression.arg2 = arg2
     expression.arg3 = arg3
     expression

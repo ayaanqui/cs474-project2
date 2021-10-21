@@ -1,13 +1,15 @@
 class Expression
-  attr_accessor(:line)
+  attr_accessor(:expression)
+  attr_accessor(:line_number)
   attr_accessor(:var)
   attr_accessor(:assigner)
   attr_accessor(:arg1)
   attr_accessor(:arg2)
   attr_accessor(:arg3)
 
-  def initialize(line, var, assigner, arg1)
-    @line = line
+  def initialize(expression, line_number, var, assigner, arg1)
+    @expression = expression
+    @line_number = line_number
     @var = var
     @assigner = assigner
     @arg1 = arg1
@@ -16,7 +18,8 @@ class Expression
   end
 
   def print
-    puts "Command: " + @line
+    puts "Expression: " + @expression
+    puts "Line number: " + @line_number
     puts "Left hand side: " + @var
     puts "Assigner: " + @assigner
     puts "Arg 1: " + @arg1
