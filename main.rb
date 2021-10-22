@@ -76,6 +76,7 @@ class Project2 < Parser
   private
 
   # @param expression (Expression)
+  # @param prev_snapshot (VariableSnapshot)
   # @return (Float)
   def assign_operator(expression, prev_snapshot)
     arg1 = value_from_expression_arg expression.arg1, prev_snapshot
@@ -112,7 +113,7 @@ class Project2 < Parser
   def value_from_expression_arg(arg, expression)
     value = Float arg, exception: false
     if value == nil
-      value get_value arg, expression
+      value = get_value arg, expression
     end
     value
   end
