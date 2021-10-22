@@ -10,4 +10,11 @@ class VariableSnapshot
     @y = 0
     @z = 0
   end
+
+  def print
+    puts "w: " + @w.to_s
+    puts "x: " + @x.to_s
+    puts "y: " + @y.to_s
+    puts "z: " + @z.to_s
+  end
 end
