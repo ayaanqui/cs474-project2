@@ -31,31 +31,17 @@ class Project2 < Parser
     @i = 0
 
     while true
-      input = gets
+      input = gets.chomp.downcase
       command = input[0]
 
       case command
       when "r"
-        @expression_list = parsed_expression_list
-        @program_execution = @expression_list.dup
-
-        history = [VariableSnapshot.new]
-        @i = 0
-        while @i < @program_execution.length do
-          exp = @program_execution[@i]
-          puts "#{exp.line_number}: #{exp.expression}"
-          eval_return = eval history, exp
-          if eval_return != nil
-            history = eval_return
-            puts history.last.print
-          elsif @stop_loop
-            break
-          end
-          @i += 1
-        end
-        puts "Program executed."
+        execute_program false
       when "s"
-        puts "Run one line at a time."
+        execution = execute_program true
+        if !execution
+          break
+        end
       when "x"
         break
       else
@@ -64,6 +50,38 @@ class Project2 < Parser
 
       puts ""
     end
+  end
+
+  # @param line_by_line_mode (Boolean)
+  def execute_program(line_by_line_mode)
+    @expression_list = parsed_expression_list
+    @program_execution = @expression_list.dup
+
+    history = [VariableSnapshot.new]
+    @i = 0
+    while @i < @program_execution.length do
+      exp = @program_execution[@i]
+      puts "#{exp.line_number}: #{exp.expression}"
+      eval_return = eval history, exp
+      if eval_return != nil
+        history = eval_return
+        puts history.last.print
+      elsif @stop_loop
+        break
+      end
+
+      if line_by_line_mode
+        puts ""
+        response = gets.chomp.downcase[0]
+        if response == "x"
+          return false
+        end
+      end
+
+      @i += 1
+    end
+    puts "Program executed."
+    true
   end
 
     # @return (Array)
@@ -110,6 +128,8 @@ class Project2 < Parser
 
 
   private
+
+
 
   # @param expression (Expression)
   # @param prev_snapshot (VariableSnapshot)
