@@ -6,6 +6,7 @@ class Project2 < Parser
   def initialize
     @expression_list = []
     @program_execution = []
+    @stop_loop = false
     @loop_counter = 0
     @i = 0
 
@@ -26,6 +27,7 @@ class Project2 < Parser
     @expression_list = []
     @program_execution = []
     @loop_counter = 0
+    @stop_loop = false
     @i = 0
 
     while true
@@ -39,20 +41,19 @@ class Project2 < Parser
 
         history = [VariableSnapshot.new]
         @i = 0
-        while true do
-          if @i >= @program_execution.length
-            break
-          end
-
+        while @i < @program_execution.length do
           exp = @program_execution[@i]
           puts "#{exp.line_number}: #{exp.expression}"
           eval_return = eval history, exp
           if eval_return != nil
             history = eval_return
             puts history.last.print
+          elsif @stop_loop
+            break
           end
           @i += 1
         end
+        puts "Program executed."
       when "s"
         puts "Run one line at a time."
       when "x"
@@ -88,7 +89,19 @@ class Project2 < Parser
       snapshot = set_value ex.var, value, prev_snapshot
       return history.push snapshot
     when "?"
+      if @loop_counter >= 100
+        puts "Do you want to keep the loop going? (y/n)"
+        response = gets.chomp.downcase[0]
+        if response == "n"
+          @loop_counter = 0
+          @stop_loop = true
+          return nil
+        else
+          @loop_counter = 0
+        end
+      end
       loop ex, prev_snapshot
+      @loop_counter += 1
       return history.push prev_snapshot
     else
       return nil
