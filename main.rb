@@ -7,6 +7,7 @@ class Project2 < Parser
     @expression_list = []
     @program_execution = []
     @loop_counter = 0
+    @i = 0
 
     super(%w[w x y z], %w[= ?], %w[+ - * / **])
   end
@@ -25,6 +26,7 @@ class Project2 < Parser
     @expression_list = []
     @program_execution = []
     @loop_counter = 0
+    @i = 0
 
     while true
       input = gets
@@ -36,20 +38,20 @@ class Project2 < Parser
         @program_execution = @expression_list.dup
 
         history = [VariableSnapshot.new]
-        i = 0
+        @i = 0
         while true do
-          if i >= @program_execution.length
+          if @i >= @program_execution.length
             break
           end
 
-          exp = @program_execution[i]
+          exp = @program_execution[@i]
           puts "#{exp.line_number}: #{exp.expression}"
           eval_return = eval history, exp
           if eval_return != nil
             history = eval_return
             puts history.last.print
           end
-          i += 1
+          @i += 1
         end
       when "s"
         puts "Run one line at a time."
@@ -116,20 +118,18 @@ class Project2 < Parser
     var = value_from_expression_arg expression.var, prev_snapshot
     line = value_from_expression_arg expression.arg1, prev_snapshot
 
-    exp_line_number = Float expression.line_number, exception: false
+    exp_line_number = Integer expression.line_number, exception: false
     if exp_line_number == nil
       return false
     end
 
     if var == 0
-      loop_expression_list = @expression_list[exp_line_number..]
       ret_val = false
     else
-      loop_expression_list = @expression_list[line-1..exp_line_number-1]
+      loop_expression_list = @expression_list[line-1..]
+      @program_execution = @program_execution[0..@i] + loop_expression_list
       ret_val = true
     end
-
-    @program_execution = @program_execution[0..exp_line_number-1] + loop_expression_list
     ret_val
   end
 
