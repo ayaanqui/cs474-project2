@@ -12,9 +12,7 @@ class VariableSnapshot
   end
 
   def print
-    puts "w: " + @w.to_s
-    puts "x: " + @x.to_s
-    puts "y: " + @y.to_s
-    puts "z: " + @z.to_s
+    puts "Result:"
+    puts "x = #{@x}, y = #{@y}, w = #{@w}, and z = #{@z}"
   end
 end

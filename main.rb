@@ -43,7 +43,7 @@ class Project2 < Parser
           end
 
           exp = @program_execution[i]
-          puts exp.expression
+          puts "#{exp.line_number}: #{exp.expression}"
           eval_return = eval history, exp
           if eval_return != nil
             history = eval_return
@@ -129,10 +129,7 @@ class Project2 < Parser
       ret_val = true
     end
 
-    if ret_val
-      @program_execution = @program_execution[0..exp_line_number-1]
-    end
-    @program_execution = @program_execution + loop_expression_list
+    @program_execution = @program_execution[0..exp_line_number-1] + loop_expression_list
     ret_val
   end
 
