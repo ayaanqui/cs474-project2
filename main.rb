@@ -4,6 +4,10 @@ require_relative "./variable_snapshot"
 
 class Project2 < Parser
   def initialize
+    @expression_list = []
+    @program_execution = []
+    @loop_counter = 0
+
     super(%w[w x y z], %w[= ?], %w[+ - * / **])
   end
 
@@ -18,18 +22,28 @@ class Project2 < Parser
   end
 
   def program_loop
+    @expression_list = []
+    @program_execution = []
+    @loop_counter = 0
+
     while true
       input = gets
       command = input[0]
 
       case command
       when "r"
-        list = parsed_expression_list
+        @expression_list = parsed_expression_list
+        @program_execution = @expression_list.dup
+
         history = [VariableSnapshot.new]
-        list.each do |exp|
+        for i in (0..@program_execution.length) do
+          exp = @program_execution[i]
           puts exp.expression
-          history = eval history, exp
-          puts history.last.print
+          eval_return = eval history, exp
+          if eval_return != nil
+            history = eval_return
+            puts history.last.print
+          end
         end
       when "s"
         puts "Run one line at a time."
@@ -43,7 +57,7 @@ class Project2 < Parser
     end
   end
 
-    # @return ([Expression])
+    # @return (Array)
   def parsed_expression_list
     data = get_file_data "pc_input.txt"
     parsed_lines = []
@@ -53,8 +67,6 @@ class Project2 < Parser
     end
     parsed_lines
   end
-
-  private
 
   # @param history (Array)
   # @param expression (Expression)
@@ -68,8 +80,9 @@ class Project2 < Parser
       return history.push snapshot
     when "?"
       puts "Loop"
+      loop ex, history.last
     end
-    []
+    nil
   end
 
 
@@ -86,6 +99,32 @@ class Project2 < Parser
       return condense arg1, arg3, expression.arg2
     end
     arg1
+  end
+
+  # @param expression (Expression)
+  # @param prev_snapshot (VariableSnapshot)
+  # @return (Boolean)
+  def loop(expression, prev_snapshot)
+    var = value_from_expression_arg expression.var, prev_snapshot
+    line = value_from_expression_arg expression.arg1, prev_snapshot
+
+    exp_line_number = Float expression.line_number, exception: false
+    if exp_line_number == nil
+      return false
+    end
+
+    if var == 0
+      loop_expression_list = @expression_list[exp_line_number..]
+      ret_val = false
+    else
+      loop_expression_list = @expression_list[line-1..exp_line_number-1]
+      ret_val = true
+    end
+    loop_expression_list.each do |l|
+      l.print
+    end
+    @program_execution = @program_execution + loop_expression_list
+    return ret_val
   end
 
   # @param arg1 (Float)
