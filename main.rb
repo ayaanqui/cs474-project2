@@ -36,7 +36,12 @@ class Project2 < Parser
         @program_execution = @expression_list.dup
 
         history = [VariableSnapshot.new]
-        for i in (0..@program_execution.length) do
+        i = 0
+        while true do
+          if i >= @program_execution.length
+            break
+          end
+
           exp = @program_execution[i]
           puts exp.expression
           eval_return = eval history, exp
@@ -44,6 +49,7 @@ class Project2 < Parser
             history = eval_return
             puts history.last.print
           end
+          i += 1
         end
       when "s"
         puts "Run one line at a time."
@@ -73,16 +79,18 @@ class Project2 < Parser
   # @return []
   def eval(history, expression)
     ex = expression
+    prev_snapshot = history.last
     case ex.assigner
     when "="
-      value = assign_operator expression, history.last
-      snapshot = set_value ex.var, value, history.last
+      value = assign_operator expression, prev_snapshot
+      snapshot = set_value ex.var, value, prev_snapshot
       return history.push snapshot
     when "?"
-      puts "Loop"
-      loop ex, history.last
+      loop ex, prev_snapshot
+      return history.push prev_snapshot
+    else
+      return nil
     end
-    nil
   end
 
 
@@ -120,11 +128,12 @@ class Project2 < Parser
       loop_expression_list = @expression_list[line-1..exp_line_number-1]
       ret_val = true
     end
-    loop_expression_list.each do |l|
-      l.print
+
+    if ret_val
+      @program_execution = @program_execution[0..exp_line_number-1]
     end
     @program_execution = @program_execution + loop_expression_list
-    return ret_val
+    ret_val
   end
 
   # @param arg1 (Float)
@@ -143,6 +152,8 @@ class Project2 < Parser
       return arg1 / arg2
     when "**"
       return arg1 ** arg2
+    else
+      return nil
     end
   end
 
@@ -161,7 +172,6 @@ class Project2 < Parser
   # @param snapshot (VariableSnapshot)
   # @return (Float)
   def get_value(var, snapshot)
-    value = 0
     case var
     when "w"
       value = snapshot.w
@@ -171,6 +181,8 @@ class Project2 < Parser
       value = snapshot.y
     when "z"
       value = snapshot.z
+    else
+      value = 0
     end
     value
   end
@@ -202,6 +214,8 @@ class Project2 < Parser
       v.x = prev.x
       v.y = prev.y
       v.z = value
+    else
+      return v
     end
     v
   end
