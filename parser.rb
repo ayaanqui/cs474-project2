@@ -29,7 +29,7 @@ class Parser
     lhs = expression[0]
     assigner = expression[1] # Could be a "=" or "?"
 
-    arg1, arg2, arg3 = nil
+    arg2, arg3 = nil
     arg1 = expression[2]
     if parsedInput.length == MAX_LEN
       arg2 = expression[3]
@@ -49,7 +49,8 @@ class Parser
 
   def strip_period(input)
     len = input.length
-    if input[len-1] == "."
+    ch = input[len - 1]
+    if ch == "." || ch == ":"
       return input[0..(len-2)]
     end
     input

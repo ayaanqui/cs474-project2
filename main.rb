@@ -13,24 +13,14 @@ class Project2 < Parser
     super(%w[w x y z], %w[= ?], %w[+ - * / **])
   end
 
-  # Returns each line in filename as an element in an array
-  # @param filename (String)
-  # @return (Array)
-  def get_file_data(filename)
-    file = File.open filename
-    data = file.readlines.map { |line| line.chomp }
-    file.close
-    data
-  end
-
   def program_loop
-    @expression_list = []
-    @program_execution = []
-    @loop_counter = 0
-    @stop_loop = false
-    @i = 0
-
     while true
+      @expression_list = []
+      @program_execution = []
+      @loop_counter = 0
+      @stop_loop = false
+      @i = 0
+
       input = gets.chomp.downcase
       command = input[0]
 
@@ -50,6 +40,16 @@ class Project2 < Parser
 
       puts ""
     end
+  end
+
+  # Returns each line in filename as an element in an array
+  # @param filename (String)
+  # @return (Array)
+  def get_file_data(filename)
+    file = File.open filename
+    data = file.readlines.map { |line| line.chomp }
+    file.close
+    data
   end
 
   # @param line_by_line_mode (Boolean)
